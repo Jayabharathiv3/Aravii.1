@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Image Analysis - AI Business Consultant{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+            <h1 class="card-title">📸 Multimodal Image Analysis</h1>
+            <p class="card-subtitle">
+                Upload business assets (shopfront, shelf displays, revenue charts, receipts, or products) for instant AI audit.
+            </p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">
+            &larr; Dashboard
+        </a>
+    </div>
+
+    {% if not has_api_key %}
+    <div class="alert alert-warning" style="margin-top: 1rem;">
+        <span>⚠️ <strong>Gemini API Key Required:</strong> Configure <code>GEMINI_API_KEY</code> in <code>app.py</code> for image analysis.</span>
+    </div>
+    {% endif %}
+
+    <!-- Upload Form -->
+    <form action="{{ url_for('image_analysis') }}" method="POST" enctype="multipart/form-data" style="margin-top: 1.5rem;" id="uploadForm">
+        <div class="form-group">
+            <label for="image" class="form-label">Select Business Image (JPG, JPEG, PNG • Max 5MB)</label>
+            <input 
+                type="file" 
+                id="image" 
+                name="image" 
+                class="form-control" 
+                accept=".jpg,.jpeg,.png" 
+                required 
+                onchange="previewLocalImage(event)"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="prompt" class="form-label">Specific Question or Focus (Optional)</label>
+            <input 
+                type="text" 
+                id="prompt" 
+                name="prompt" 
+                class="form-control" 
+                placeholder="e.g. 'Critique our store window display', 'Audit this invoice for anomalies'"
+                value="{{ custom_prompt or '' }}"
+            >
+        </div>
+
+        <!-- Local client preview prior to upload -->
+        <div id="localPreviewContainer" style="display: none; margin-bottom: 1.2rem; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Image Selected:</p>
+            <img id="localPreviewImg" src="" alt="Preview" style="max-height: 250px; border-radius: 8px; border: 1px solid var(--border);">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="analyzeBtn">
+            🔍 Analyze with Gemini 2.5 Flash
+        </button>
+    </form>
+</div>
+
+<!-- Uploaded Image & AI Findings Display -->
+{% if image_filename %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title" style="font-size: 1.25rem;">🔍 AI Consultant Findings</h2>
+        <p class="card-subtitle">
+            {% if custom_prompt %}Focus: "{{ custom_prompt }}"{% else %}General Business Audit{% endif %}
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; align-items: start;">
+        <!-- Image Preview -->
+        <div style="text-align: center;">
+            <img 
+                src="{{ url_for('static', filename='uploads/' + image_filename) }}" 
+                alt="Uploaded Business Image" 
+                class="image-preview"
+            >
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                Uploaded File: {{ image_filename }}
+            </p>
+        </div>
+
+        <!-- AI Output Box -->
+        <div>
+            <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.5rem;">
+                Strategic Analysis & Recommendations
+            </h3>
+            <div class="ai-output-box">
+                {{ ai_analysis }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function previewLocalImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Check file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size exceeds 5MB. Please choose a smaller image.");
+                event.target.value = "";
+                document.getElementById('localPreviewContainer').style.display = 'none';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('localPreviewImg').src = e.target.result;
+                document.getElementById('localPreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const uploadForm = document.getElementById('uploadForm');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    if (uploadForm && analyzeBtn) {
+        uploadForm.addEventListener('submit', function() {
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = 'Analyzing with Gemini Vision...';
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Business Consultant{% endblock %}
+
+{% block content %}
+<div class="card" style="background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%); color: white;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 800;">Welcome, {{ user.name }}!</h1>
+            <p style="opacity: 0.9; margin-top: 0.3rem;">
+                Your strategic advisory hub powered by Google Gemini 2.5 Flash.
+            </p>
+        </div>
+        <div>
+            {% if profile and profile.business_name %}
+                <span style="background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.88rem;">
+                    🏢 {{ profile.business_name }} ({{ profile.industry or 'General' }})
+                </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if not has_api_key %}
+<div class="alert alert-warning">
+    <span>⚠️ <strong>Gemini API Key Required:</strong> Please open <code>app.py</code> and set <code>GEMINI_API_KEY = "YOUR_KEY"</code> to activate AI features.</span>
+</div>
+{% endif %}
+
+<h2 style="font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.5rem; color: var(--primary);">
+    Strategic Modules
+</h2>
+
+<div class="dashboard-grid">
+    <!-- Module 1: Ask AI Consultant -->
+    <a href="{{ url_for('chat') }}" class="module-card">
+        <div>
+            <div class="module-icon">💬</div>
+            <div class="module-title">Ask AI Consultant</div>
+            <div class="module-desc">
+                Consult with our AI executive on pricing strategies, marketing tactics, sales funnels, and growth bottlenecks.
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--secondary); font-weight: 600;">
+            <span>{{ message_count }} questions asked</span>
+            <span>Open Chat &rarr;</span>
+        </div>
+    </a>
+
+    <!-- Module 2: Image Analysis -->
+    <a href="{{ url_for('image_analysis') }}" class="module-card">
+        <div>
+            <div class="module-icon">📸</div>
+            <div class="module-title">Image Analysis</div>
+            <div class="module-desc">
+                Upload shop displays, competitor products, invoices, or revenue charts for multimodal AI audit & strategic takeaways.
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--secondary); font-weight: 600;">
+            <span>Multimodal Vision</span>
+            <span>Audit Image &rarr;</span>
+        </div>
+    </a>
+
+    <!-- Module 3: Business Profile -->
+    <a href="{{ url_for('profile') }}" class="module-card">
+        <div>
+            <div class="module-icon">📊</div>
+            <div class="module-title">Business Profile</div>
+            <div class="module-desc">
+                Manage your industry, budget, goals, and target customer persona so the AI tailors every response to your business.
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--secondary); font-weight: 600;">
+            <span>{{ 'Configured' if profile and profile.business_name else 'Incomplete' }}</span>
+            <span>Edit Profile &rarr;</span>
+        </div>
+    </a>
+
+    <!-- Module 4: Logout -->
+    <a href="{{ url_for('logout') }}" class="module-card" style="border-color: #FECACA;">
+        <div>
+            <div class="module-icon">🚪</div>
+            <div class="module-title" style="color: var(--danger);">Logout</div>
+            <div class="module-desc">
+                Safely end your consultant session and clear local session cookies.
+            </div>
+        </div>
+        <div style="text-align: right; font-size: 0.85rem; color: var(--danger); font-weight: 600;">
+            <span>Sign Out &rarr;</span>
+        </div>
+    </a>
+</div>
+
+<!-- Profile Snapshot Card -->
+{% if profile %}
+<div class="card" style="margin-top: 2rem;">
+    <div class="card-header">
+        <h3 class="card-title" style="font-size: 1.15rem;">🏢 Active Business Context</h3>
+        <p class="card-subtitle">AI recommendations are contextualized using these parameters</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+            <strong style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Company Name</strong>
+            <p style="font-weight: 600;">{{ profile.business_name or 'Not set' }}</p>
+        </div>
+        <div>
+            <strong style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Industry</strong>
+            <p style="font-weight: 600;">{{ profile.industry or 'Not set' }}</p>
+        </div>
+        <div>
+            <strong style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Budget</strong>
+            <p style="font-weight: 600;">{{ profile.budget or 'Not set' }}</p>
+        </div>
+        <div>
+            <strong style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Strategic Goals</strong>
+            <p style="font-weight: 600;">{{ profile.goals or 'Not set' }}</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

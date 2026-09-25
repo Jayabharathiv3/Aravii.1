@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Powered Business Consultant{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('login') }}" class="brand-link">
+                <span>💼 Business Consultant AI</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    {% if session.get('user_id') %}
+                        <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                        <li><a href="{{ url_for('chat') }}" class="{% if request.endpoint == 'chat' %}active{% endif %}">Ask AI Consultant</a></li>
+                        <li><a href="{{ url_for('image_analysis') }}" class="{% if request.endpoint == 'image_analysis' %}active{% endif %}">Image Analysis</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}">Business Profile</a></li>
+                        <li><a href="{{ url_for('logout') }}" class="nav-btn-logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Log In</a></li>
+                        <li><a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Flash Alert Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+            {% if not_found %}
+                <div class="card" style="text-align: center; padding: 3rem;">
+                    <h2>404 - Page Not Found</h2>
+                    <p style="margin-top: 1rem;">The page you are looking for does not exist.</p>
+                    <a href="{{ url_for('home') }}" class="btn btn-primary" style="margin-top: 1.5rem;">Return Home</a>
+                </div>
+            {% endif %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 AI-Powered Business Consultant. Powered by Google Gemini 2.5 Flash.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

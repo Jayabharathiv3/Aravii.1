@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Ask AI Consultant - AI Business Consultant{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 1rem; padding: 1.2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+            <h1 class="card-title" style="font-size: 1.3rem;">💬 Executive AI Business Consultant</h1>
+            <p class="card-subtitle">
+                {% if profile and profile.business_name %}
+                    Advisory Context: <strong>{{ profile.business_name }}</strong> ({{ profile.industry or 'General' }})
+                {% else %}
+                    General Strategy Advisory
+                {% endif %}
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            {% if messages %}
+            <form action="{{ url_for('clear_chat') }}" method="POST" onsubmit="return confirm('Clear all consultation history?');">
+                <button type="submit" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">
+                    🗑️ Clear History
+                </button>
+            </form>
+            {% endif %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">
+                &larr; Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if not has_api_key %}
+<div class="alert alert-warning">
+    <span>⚠️ <strong>Gemini API Key Required:</strong> Paste your API key in <code>app.py</code> (variable <code>GEMINI_API_KEY</code>) to enable live answers.</span>
+</div>
+{% endif %}
+
+<!-- Chat Room Window -->
+<div class="chat-container">
+    <div class="chat-history" id="chatHistory">
+        {% if not messages %}
+            <div style="text-align: center; margin: auto; padding: 2rem; color: var(--text-muted); max-width: 500px;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💡</div>
+                <h3 style="color: var(--text-main); margin-bottom: 0.4rem;">How can I assist your business today?</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    Ask any question regarding sales growth, competitive strategy, pricing models, marketing, or team scaling.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+                    <button class="btn btn-secondary quick-prompt" onclick="setPrompt('How to improve my sales for the upcoming quarter?')">
+                        📈 "How to improve my sales for the upcoming quarter?"
+                    </button>
+                    <button class="btn btn-secondary quick-prompt" onclick="setPrompt('Suggest marketing strategy for a small bakery')">
+                        🥐 "Suggest marketing strategy for a small bakery"
+                    </button>
+                    <button class="btn btn-secondary quick-prompt" onclick="setPrompt('How can I optimize pricing to increase profit margins without losing customers?')">
+                        🏷️ "How can I optimize pricing to increase profit margins?"
+                    </button>
+                </div>
+            </div>
+        {% else %}
+            {% for msg in messages %}
+                <div class="chat-bubble {{ msg.sender }}">
+                    <div class="chat-bubble-header">
+                        {% if msg.sender == 'user' %}
+                            👤 {{ user.name }}
+                        {% else %}
+                            🤖 AI Business Consultant
+                        {% endif %}
+                        <span style="float: right; font-weight: normal;">{{ msg.created_at.strftime('%I:%M %p') }}</span>
+                    </div>
+                    <div>{{ msg.content }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Input Bar -->
+    <form action="{{ url_for('chat') }}" method="POST" class="chat-input-bar" id="chatForm">
+        <input 
+            type="text" 
+            name="question" 
+            id="questionInput" 
+            class="form-control" 
+            placeholder="Type your business inquiry (e.g., 'How to improve my sales?')..." 
+            required 
+            autocomplete="off"
+        >
+        <button type="submit" class="btn btn-primary" id="sendBtn">
+            Send Inquiry &rarr;
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function setPrompt(text) {
+        const input = document.getElementById('questionInput');
+        input.value = text;
+        input.focus();
+    }
+
+    // Auto-scroll chat history to bottom
+    const chatHistory = document.getElementById('chatHistory');
+    if (chatHistory) {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Loading feedback on submit
+    const chatForm = document.getElementById('chatForm');
+    const sendBtn = document.getElementById('sendBtn');
+    if (chatForm && sendBtn) {
+        chatForm.addEventListener('submit', function() {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = 'Consulting Gemini...';
+        });
+    }
+</script>
+{% endblock %}

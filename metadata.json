@@ -1,0 +1,6 @@
+{
+  "name": "Business Consultant AI",
+  "description": "AI-Powered Business Consultant providing strategic insights, multimodal business image analysis, Q&A, and business profile planning.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
