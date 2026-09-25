@@ -1,0 +1,17 @@
+{
+  "name": "ai-powered-business-consultant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Powered Business Consultant Web Application - Ready for Vercel deployment",
+  "scripts": {
+    "build": "echo 'Static assets ready for deployment'"
+  },
+  "keywords": [
+    "ai",
+    "business-consultant",
+    "gemini",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT"
+}

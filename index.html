@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Business Consultant</title>
+    <meta name="description" content="AI-Powered Business Consultant providing executive strategy, multimodal image analysis, question answering, and business profile planning.">
+    <!-- Clean relative paths for Vercel & GitHub deployment -->
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a id="brandLink" class="brand-link" href="#dashboard">
+                <span>💼 Business Consultant AI</span>
+                <span class="brand-badge">Gemini 2.5 Flash</span>
+            </a>
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <!-- Populated dynamically by app.js -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash message alerts container -->
+    <div class="main-content" style="margin-bottom: 0; padding-bottom: 0;">
+        <div class="flash-container" id="flashContainer"></div>
+    </div>
+
+    <!-- Main dynamic application container -->
+    <main class="main-content" id="mainContent">
+        <!-- Rendered dynamically by app.js -->
+        <noscript>
+            <div class="card" style="text-align: center; padding: 2.5rem;">
+                <h2>JavaScript Required</h2>
+                <p style="margin-top: 1rem; color: #64748B;">
+                    Please enable JavaScript in your browser to access the AI Business Consultant platform.
+                </p>
+            </div>
+        </noscript>
+    </main>
+
+    <!-- Global Application Footer -->
+    <footer>
+        <p>&copy; 2026 AI-Powered Business Consultant. Powered by Google Gemini 2.5 Flash. Fully optimized for Vercel deployment.</p>
+    </footer>
+
+    <!-- Core Application Logic -->
+    <script src="./js/app.js"></script>
+</body>
+</html>
