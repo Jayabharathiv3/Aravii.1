@@ -1,9 +1,10 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "outputDirectory": "public",
   "rewrites": [
     {
-      "source": "/((?!css/|js/|assets/|favicon.ico|.*\\..*).*)",
+      "source": "/((?!assets/|style\\.css|script\\.js|css/|js/|favicon\\.ico|favicon\\.svg|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]
